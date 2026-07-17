@@ -1,0 +1,20 @@
+{
+  "name": "@convoark/adapters",
+  "private": true,
+  "type": "module",
+  "version": "0.0.1",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "generate-keypair": "node scripts/generate-keypair.mjs",
+    "sign-bundle": "node scripts/sign-bundle.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "typescript": "5.9.3",
+    "vitest": "4.1.10"
+  }
+}
