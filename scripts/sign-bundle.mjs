@@ -69,3 +69,29 @@ const outputPath = path.join(__dirname, "..", "src", "local-bundle.ts");
 await writeFile(outputPath, output, "utf8");
 
 console.error(`Signed bundle written to ${outputPath}`);
+
+// Also write the same signature as the distributable SignedAdapterBundle
+// JSON, consumed by remote fetches instead of the bundled TS constant.
+const signedBundleJson = {
+  payload,
+  signature: {
+    keyId: signingKey.keyId,
+    algorithm: "Ed25519",
+    signature: encodeBase64(signatureBuffer),
+  },
+};
+
+const signedBundlePath = path.join(
+  __dirname,
+  "..",
+  "definitions",
+  "adapters.signed.json",
+);
+
+await writeFile(
+  signedBundlePath,
+  `${JSON.stringify(signedBundleJson, null, 2)}\n`,
+  "utf8",
+);
+
+console.error(`Signed bundle written to ${signedBundlePath}`);

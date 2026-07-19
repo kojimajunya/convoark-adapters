@@ -2,12 +2,10 @@
 import type { SignedAdapterBundle } from "./signature";
 
 export const LOCAL_SIGNED_BUNDLE: SignedAdapterBundle = {
-  payload:
-    '{"schemaVersion":1,"definitions":[{"schemaVersion":1,"service":"chatgpt","definitionVersion":1,"origin":"https://chatgpt.com","auth":{"type":"session-bearer","sessionPath":"/api/auth/session","tokenField":"accessToken"},"endpoints":{"conversationList":{"path":"/backend-api/conversations"},"conversationDetail":{"path":"/backend-api/conversation/{conversationId}"}},"parser":"chatgpt-mapping"},{"schemaVersion":1,"service":"claude","definitionVersion":1,"origin":"https://claude.ai","auth":{"type":"cookie"},"endpoints":{"organizations":{"path":"/api/organizations"},"conversationList":{"path":"/api/organizations/{organizationId}/chat_conversations"},"conversationDetail":{"path":"/api/organizations/{organizationId}/chat_conversations/{conversationId}?tree=True&rendering_mode=messages&render_all_tools=true"}},"parser":"claude-chat-messages"}],"generatedAt":"2026-07-16T16:38:42.568Z"}',
+  payload: "{\"schemaVersion\":1,\"definitions\":[{\"schemaVersion\":1,\"service\":\"chatgpt\",\"definitionVersion\":1,\"origin\":\"https://chatgpt.com\",\"auth\":{\"type\":\"session-bearer\",\"sessionPath\":\"/api/auth/session\",\"tokenField\":\"accessToken\"},\"endpoints\":{\"conversationList\":{\"path\":\"/backend-api/conversations\"},\"conversationDetail\":{\"path\":\"/backend-api/conversation/{conversationId}\"}},\"parser\":\"chatgpt-mapping\"},{\"schemaVersion\":1,\"service\":\"claude\",\"definitionVersion\":1,\"origin\":\"https://claude.ai\",\"auth\":{\"type\":\"cookie\"},\"endpoints\":{\"organizations\":{\"path\":\"/api/organizations\"},\"conversationList\":{\"path\":\"/api/organizations/{organizationId}/chat_conversations\"},\"conversationDetail\":{\"path\":\"/api/organizations/{organizationId}/chat_conversations/{conversationId}?tree=True&rendering_mode=messages&render_all_tools=true\"}},\"parser\":\"claude-chat-messages\"}],\"generatedAt\":\"2026-07-17T18:05:25.002Z\"}",
   signature: {
-    keyId: "dev-2026-07",
+    keyId: "prod-2026-07",
     algorithm: "Ed25519",
-    signature:
-      "ydtqD1fPLmvDL11OLoLi1TzYk+/mmrBarNslXsKc309W/kaLjqnL7MD09S3cNwDQKyJHRoFLPfRtrURWUGhbCg==",
+    signature: "ZsT9++t1ToCU+oVmAhsocNzmZ/BNNbZYhtZ2zCUIN0NcsabQAMgFhfHVeTa8IbFuOp6tDfRf3+ISCjQQZy/BBA==",
   },
 };

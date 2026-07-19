@@ -14,6 +14,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { promisify } from "node:util";
 import { afterEach, describe, expect, it } from "vitest";
+import { TRUSTED_KEYS } from "./keys";
 import { verifySignedBundle } from "./signature";
 
 const execFileAsync = promisify(execFile);
@@ -106,12 +107,16 @@ describe("sign-bundle.mjs", () => {
   it("writes a signed bundle that verifies against the generated public key", async () => {
     const tempDir = await createTempDir();
 
-    // Isolate the script's relative "../src/local-bundle.ts" output inside
-    // the temp directory by copying the script next to a sibling src/ dir.
+    // Isolate the script's relative "../src/local-bundle.ts" and
+    // "../definitions/adapters.signed.json" outputs inside the temp
+    // directory by copying the script next to sibling src/ and definitions/
+    // dirs.
     const scriptsDir = path.join(tempDir, "scripts");
     const srcDir = path.join(tempDir, "src");
+    const definitionsDir = path.join(tempDir, "definitions");
     await mkdir(scriptsDir, { recursive: true });
     await mkdir(srcDir, { recursive: true });
+    await mkdir(definitionsDir, { recursive: true });
     const copiedScriptPath = path.join(scriptsDir, "sign-bundle.mjs");
     await copyFile(SIGN_BUNDLE_SCRIPT.pathname, copiedScriptPath);
 
@@ -157,6 +162,18 @@ describe("sign-bundle.mjs", () => {
     expect(bundle.definitions).toEqual(DEFINITIONS_FIXTURE.definitions);
     expect(typeof bundle.generatedAt).toBe("string");
     expect(bundle.generatedAt.length).toBeGreaterThan(0);
+
+    // The distributable definitions/adapters.signed.json must carry the
+    // same payload and signature as src/local-bundle.ts.
+    const signedJsonRaw = await readFile(
+      path.join(definitionsDir, "adapters.signed.json"),
+      "utf8",
+    );
+    const signedJson = JSON.parse(signedJsonRaw);
+    expect(signedJson).toEqual({
+      payload,
+      signature: { keyId, algorithm: "Ed25519", signature },
+    });
   });
 
   it("exits with an error when arguments are missing", async () => {
@@ -169,5 +186,20 @@ describe("sign-bundle.mjs", () => {
       code: 1,
       stderr: expect.stringContaining("Usage:"),
     });
+  });
+});
+
+describe("definitions/adapters.signed.json", () => {
+  it("verifies against TRUSTED_KEYS and contains at least one definition", async () => {
+    const signedBundlePath = new URL(
+      "../definitions/adapters.signed.json",
+      import.meta.url,
+    );
+    const signedBundleRaw = await readFile(signedBundlePath, "utf8");
+    const signedBundle = JSON.parse(signedBundleRaw);
+
+    const bundle = await verifySignedBundle(signedBundle, TRUSTED_KEYS);
+
+    expect(bundle.definitions.length).toBeGreaterThan(0);
   });
 });
